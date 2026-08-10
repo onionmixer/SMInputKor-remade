@@ -1,0 +1,44 @@
+# SMInputKor-remade — 저작권/대용량 자산은 로컬 보관, git 제외
+
+# 원본 패키지(정품 소프트웨어 — 재배포 라이선스 검토 전 제외)
+orig/
+
+# 정품 설치본·SDK 추출본·바이너리 분석 덤프 (저작물)
+extracted/
+re/
+
+# 정본에서 추출/재생성하는 데이터표 (벤더 데이터 — 커밋 금지, 빌드시 생성)
+data/
+
+# 실기 백업·pkg 산출물 (정본 리소스 포함 — 커밋 금지)
+backup/
+pkg/
+
+# HANDOFF은 내부 문서
+HANDOFF.md
+
+# 빌드/임시 산출
+*.o
+*.a
+obj/
+*_reloc
+dist/
+*.tar
+*.tar.Z
+*.tar.gz
+
+# 편집기/OS 부산물
+.DS_Store
+*~
+
+# 일회성 스크래치 (실기 프로브·로그 수집 등 — 재현 가치 있는 것은
+# tools/test/ 와 tools/*.sh 로 승격해 커밋한다)
+tools/tmp/
+
+# 파이썬 부산물
+__pycache__/
+*.pyc
+
+# 실기 프로브 산출물
+*.log
+*.broken
