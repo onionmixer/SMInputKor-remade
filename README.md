@@ -24,12 +24,13 @@ Objective-C라 클래스·ivar·셀렉터·원본 `.m` 파일명이 `__OBJC` 섹
 그쪽에 들어 있고, fat 빌드에 쓰이는 멀티플랫폼 라이브러리도 4.2J
 Developer CD에서 온다. 영문판만으로는 빌드도 동작도 보장하지 않는다.
 
-배포 패키지는 **fat 3아키텍처 — i386 / m68k / sparc** 로 만든다. 즉
-Intel·Motorola·SPARC 어느 OPENSTEP에서도 같은 `.pkg` 하나로 설치된다.
-(hppa는 이 기계에 `cc1obj` 백엔드가 없어 제외했다.)
+배포 패키지는 **fat 3아키텍처 — i386 / m68k / sparc** 로 만든다. 하나의
+`.pkg` 로 셋 다 설치되며, Installer.app 이 이를 정상 처리하고 **설치 후에도
+세 아키텍처가 모두 남는 것**을 실기에서 확인했다(설치본 `file` = fat file
+with 3 architectures). (hppa는 이 기계에 `cc1obj` 백엔드가 없어 제외했다.)
 
-동작 확인은 **i386 실기**에서 했다. m68k/sparc는 빌드·패키징까지이며
-실기 검증은 하지 않았다.
+**입력 동작 확인은 i386 실기**에서 했다. m68k/sparc 는 빌드·패키징·설치까지
+검증했고, 그 위에서 실제로 한글을 입력해 본 것은 아니다.
 
 ## 지금 상태
 
@@ -134,6 +135,17 @@ i386만 필요하면 `tools/build-app.sh` + `tools/build-pkg.sh` 로 충분하�
 
 **설치** — 산출된 `.pkg` 를 Installer.app 으로 연다. 입력기는 부팅 시
 `SMHangul.rc` 가 기동하므로 **재부팅해야 활성화**된다.
+
+> **이 패키지만으로는 부족하다.** 원본 `Softmagic_Hangul.pkg`(18MB)는 입력기
+> 외에 한글 폰트(`/NextLibrary/Fonts` — Gothic·MyungJo 계열), **EUC-KR 변환표**
+> (`Foundation.framework/Resources/CharacterSets` — 일본어판의 EUC-JP 표를
+> 치우고 대체), Rulebooks, SymbolInput 을 함께 깔고 `buildafmdir` 로 폰트
+> 메트릭을 재생성한다. 우리 패키지는 **입력기 하나(22파일, 680KB)** 만 담는다 —
+> 그 리소스들은 재배포 대상이 아니기 때문이다.
+>
+> 따라서 **정품이 한 번이라도 설치된 시스템**에 덮어쓰는 용도다. 정품을 깐 적
+> 없는 4.2J에 이것만 설치하면 폰트와 인코딩 변환표가 없어 제대로 동작하지
+> 않는다.
 
 ## 도구
 Ghidra(MCP), IDA Pro(MCP), gdb-multiarch, 실기 OPENSTEP(정본 실행 환경).
