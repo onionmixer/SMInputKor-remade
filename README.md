@@ -1,16 +1,22 @@
 # SMInputKor-remade
 
 OPENSTEP 4.2 한글 입력기 **SMHangul**(Softmagic Korean Input)을 소스 없는
-i386 Mach-O 바이너리에서 **소스 레벨로 복원**하고(remade), 원본 버그를 고치고
-기능을 확장하는 리버스 엔지니어링 프로젝트.
+Mach-O 바이너리에서 **소스 레벨로 복원**하는(remade) 리버스 엔지니어링 프로젝트.
 
 복원에서 그치지 않고 실기에서 검증하며 다듬는다 — 원본의 조합/설정 버그를
 바로잡고, **원본이 만들다 만 Preference 기능들을 완성**했으며, 원본에 없던
 **세벌식(390/최종) 자판 지원**을 더했다.
 
+### 왜 복원이 가능한가
+
+Softmagic 한글 입력기는 OPENSTEP의 Input Manager(입력서버) 구조로 동작한다.
+정품이 실기에 설치·동작 중이라 이를 **정본이자 동작 오라클**로 삼는다. 대상이
+Objective-C라 클래스·ivar·셀렉터·원본 `.m` 파일명이 `__OBJC` 섹션에 평문으로
+남아 있어 **인터페이스는 사실상 이미 복원되어 있고**, 복원할 것은 메서드
+본문이다.
+
 - 목표·단계·방법론: [`PLAN_SMINPUTKOR.md`](PLAN_SMINPUTKOR.md) (정본)
 - 자판 확장 계획·실행 기록: [`doc/KEYBOARD_LAYOUT_PLAN.md`](doc/KEYBOARD_LAYOUT_PLAN.md)
-- 재개 노트(내부): `HANDOFF.md` (gitignore)
 
 ## 요구 환경
 
@@ -27,15 +33,13 @@ Intel·Motorola·SPARC 어느 OPENSTEP에서도 같은 `.pkg` 하나로 설치�
 
 ## 지금 상태
 
-실기 OPENSTEP(Intel)에서 **한글 입력 동작**. fat(i386/m68k/sparc) 빌드·설치 패키지까지.
-
 | | |
 |---|---|
 | 복원 | 8클래스·119메서드 — 빌드·설치·동작 |
 | 자판 | **두벌식 / 세벌식390 / 세벌식최종** (Preference 라디오로 선택) |
 | 고친 원본 버그 | 입력서버 등록 누락(hang), 자모 표시 오프셋, space 소실, 라디오 저장/로드 폴라리티, `ㅋㅋㅋ` 프리즈(오토마타 오배정), 자판사전 파괴(한/영 전환 불능) |
 | 완성한 미구현 기능 | Preference 옵션 5종 + 패널 닫기 버튼 (아래) |
-| 배포 | `.pkg` (fat 3아치, 페이로드 22파일) — `tools/build-fatpkg.sh` |
+| 배포 | Installer.app 용 `.pkg` (페이로드 22파일) — `tools/build-fatpkg.sh` |
 
 ### 원본이 만들다 만 것들
 
@@ -67,13 +71,6 @@ Preference 패널에는 옵션이 있는데 **원본은 그 값을 저장·로�
 복모음·복종성은 결합표, 겹받침 단일키(최종)도 지원. 검증은 `tools/test/` 의 트레이스
 하니스로 실기에서 수행한다(3벌 조합·백스페이스, 두벌식 무회귀).
 
-## 무엇인가
-Softmagic 한글 입력기는 OPENSTEP의 Input Manager(입력서버) 구조로 동작한다.
-정품이 실기 OPENSTEP에 설치·동작 중이라 이를 정본/동작 오라클로 삼아, 재빌드
-가능한 Objective-C 소스로 복원한다. 대상 바이너리는 Objective-C라 클래스·ivar·
-셀렉터·원본 .m 파일명이 __OBJC에 평문 보존되어 인터페이스는 사실상 복원되어
-있고, 복원할 것은 8개 클래스·119개 메서드 본문이다.
-
 ## 디렉터리
 | 경로 | 내용 |
 |---|---|
@@ -88,10 +85,6 @@ Softmagic 한글 입력기는 OPENSTEP의 Input Manager(입력서버) 구조로 
 | `tools/` | 빌드·패키징·배포 스크립트, 표 생성기(`gen_layouts.py`/`extract_tables.py`), `nxpkg_extract.py`(비표준 NeXT pkg tar 추출기) |
 | `tools/test/` | 실기 검증 하니스(조합 트레이스·백스페이스·회귀) |
 | `dist/` | 산출 `.pkg` (커밋 제외) |
-
-> `data/` 는 커밋하지 않는다. 빌드 전에 생성한다:
-> `python3 tools/extract_tables.py` (정본 바이너리에서 조합표 추출),
-> `python3 tools/gen_layouts.py` (세벌식 자판표 생성).
 
 ## 빌드·설치
 
