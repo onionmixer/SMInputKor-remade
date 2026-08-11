@@ -4,8 +4,9 @@ OPENSTEP 4.2 한글 입력기 **SMHangul**(Softmagic Korean Input)을 소스 없
 i386 Mach-O 바이너리에서 **소스 레벨로 복원**하고(remade), 원본 버그를 고치고
 기능을 확장하는 리버스 엔지니어링 프로젝트.
 
-복원에서 그치지 않고 실기에서 검증하며 다듬는다 — 원본에 있던 조합/설정 버그를
-바로잡고, 원본에 없던 **세벌식(390/최종) 자판 지원**을 더했다.
+복원에서 그치지 않고 실기에서 검증하며 다듬는다 — 원본의 조합/설정 버그를
+바로잡고, **원본이 만들다 만 Preference 기능들을 완성**했으며, 원본에 없던
+**세벌식(390/최종) 자판 지원**을 더했다.
 
 - 목표·단계·방법론: [`PLAN_SMINPUTKOR.md`](PLAN_SMINPUTKOR.md) (정본)
 - 자판 확장 계획·실행 기록: [`doc/KEYBOARD_LAYOUT_PLAN.md`](doc/KEYBOARD_LAYOUT_PLAN.md)
@@ -19,8 +20,32 @@ i386 Mach-O 바이너리에서 **소스 레벨로 복원**하고(remade), 원본
 |---|---|
 | 복원 | 8클래스·119메서드 — 빌드·설치·동작 |
 | 자판 | **두벌식 / 세벌식390 / 세벌식최종** (Preference 라디오로 선택) |
-| 고친 원본 버그 | 입력서버 등록 누락(hang), 자모 표시 오프셋, space 소실, 설정 미반영, 라디오 저장/로드 폴라리티, `ㅋㅋㅋ` 프리즈(오토마타 오배정), 자판사전 파괴(한/영 전환 불능) |
+| 고친 원본 버그 | 입력서버 등록 누락(hang), 자모 표시 오프셋, space 소실, 라디오 저장/로드 폴라리티, `ㅋㅋㅋ` 프리즈(오토마타 오배정), 자판사전 파괴(한/영 전환 불능) |
+| 완성한 미구현 기능 | Preference 옵션 5종 + 패널 닫기 버튼 (아래) |
 | 배포 | `.pkg` (fat 3아치, 페이로드 22파일) — `tools/build-fatpkg.sh` |
+
+### 원본이 만들다 만 것들
+
+Preference 패널에는 옵션이 있는데 **원본은 그 값을 저장·로드만 하고 동작에는
+쓰지 않았다**(死). 라디오를 돌려도 아무 일이 일어나지 않는다. 각 옵션의
+이름과 UI 의도에 맞춰 구현하되, **기본값이 원본의 현행 동작을 그대로
+보존**하도록 해서 회귀 위험을 없앴다.
+
+| 옵션 | 원본 | 지금 |
+|---|---|---|
+| **Init State** (English/Korean) | 폴라리티가 뒤집혀 있었다 | Korean 선택 시 한글 모드로 시작 |
+| **Input Unit** (Character/Word) | 미사용 | Character = 글자 확정 즉시 커밋, Word = 누적(원본 동작) |
+| **Hanja Conversion** | 미사용 | 한자변환 on/off. 끄면 변환 없이 조합만 확정 |
+| **Hanja Area** (None/Mark) | 미사용 | 후보 패널 표시 여부. None이면 인라인만 |
+| **Hanja RepeatCount** | 미사용 | 후보 패널 Up/Down 이동 단위 (기본 10) |
+
+**Preference 패널에 닫기 버튼이 없던 것**도 고쳤다. OpenStep의 `NSWindow`는
+생성 후 `styleMask` 를 바꿀 수 없어 코드로는 불가능했고, `Preference.nib` 의
+`NSWindowTemplate` styleMask 바이트를 `Titled` → `Titled|Closable` 로 **1바이트
+패치**했다. 닫아도 패널이 해제되지 않도록 `setReleasedWhenClosed:NO` 를 함께
+넣어 재표시가 된다.
+
+자세한 측정·구현 기록: [`doc/PREF_FEATURES_PLAN.md`](doc/PREF_FEATURES_PLAN.md).
 
 ### 세벌식 지원
 자판표는 [libhangul](https://github.com/libhangul/libhangul)의 390/최종 배열을 정본으로
