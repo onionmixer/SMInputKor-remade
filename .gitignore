@@ -18,8 +18,9 @@ pkg/
 # 저장소에 넣을 것이 아니다 (수백 KB 바이너리 + 정본 리소스 포함).
 release/
 
-# HANDOFF은 내부 문서
+# 내부 문서 — 개발 환경 고유의 작업방식·재개 노트
 HANDOFF.md
+LOCAL_SETUP.md
 
 # 빌드/임시 산출
 *.o

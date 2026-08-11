@@ -57,23 +57,51 @@ Softmagic 한글 입력기는 OPENSTEP의 Input Manager(입력서버) 구조로 
 
 ## 빌드·설치
 
-빌드는 **실기 OPENSTEP에서** 한다. 이 트리를 실기에 NFS로 마운트해 두고
-(`tools/*.sh` 는 마운트 지점을 `/ndrv` 로 가정한다 — 다른 곳에 붙였다면
-스크립트의 그 경로를 고쳐야 한다), 실기에서 다음 순서로 돈다.
+두 단계로 나뉜다. **표 생성은 아무 데서나**(python3만 있으면 되고, 보통
+개발용 리눅스/맥에서), **빌드와 패키징은 OPENSTEP 실기에서** 한다.
+크로스 컴파일러가 아니라 실기의 `cc`로 짓는다.
+
+### 먼저: 정품 SMHangul이 있어야 한다
+
+조합표는 **벤더 데이터**라 이 저장소에 커밋하지 않는다. 대신 빌드 시점에
+**사용자가 보유한 정품 바이너리에서 추출**한다. 그러므로 정품 SMHangul이
+설치된 OPENSTEP이 없으면 빌드할 수 없다. 소스만 받아서 되는 프로젝트가
+아니다.
+
+**1. 표 생성** — 빌드 전에 반드시 먼저 돌린다. python3만 있으면 되고
+어느 기계에서 돌려도 좋다.
 
 ```sh
-python3 tools/extract_tables.py     # 정본 바이너리에서 조합표 추출 (리눅스에서)
-python3 tools/gen_layouts.py        # 세벌식 자판표 생성        (리눅스에서)
-sh tools/build-fat.sh               # fat(i386/m68k/sparc) 빌드  (실기에서)
-sh tools/build-fatpkg.sh            # .pkg 패키징               (실기에서)
+# 정품 바이너리에서 조합/인코딩표 추출 → data/automata_tables.m
+python3 tools/extract_tables.py [SMHangul_바이너리] [출력.m]
+#   기본 입력: extracted/live/SMHangul/SMHangul.app/SMHangul
+
+# 세벌식 390/최종 자판표 생성 → data/layout_tables.m
+python3 tools/gen_layouts.py
 ```
 
-`data/` 는 커밋하지 않으므로 앞의 두 단계가 선행되어야 한다. fat 빌드에는
-4.2J Developer CD의 멀티플랫폼 라이브러리가 설치되어 있어야 한다
-(설치 프레임워크가 i386 전용이면 m68k/sparc 링크가 실패한다 —
-[`doc/INSTALL_PLAN.md`](doc/INSTALL_PLAN.md)).
+`gen_layouts.py` 는 정품이 필요 없다 — 자판 배열의 출처는
+[libhangul](https://github.com/libhangul/libhangul)이고 표는 선언적으로
+정의되어 있다. 정품이 필요한 것은 `extract_tables.py` 쪽이다.
 
-설치는 산출된 `.pkg` 를 Installer.app 으로 연다. 입력기는 부팅 시
+**2. 빌드·패키징** — 이 트리를 OPENSTEP 기계로 옮긴 뒤(공유 폴더든
+FTP든 상관없다), 그 위에서 실행한다.
+
+```sh
+sh tools/build-fat.sh       # fat(i386/m68k/sparc) 빌드
+sh tools/build-fatpkg.sh    # Installer.app 용 .pkg 패키징
+```
+
+> 스크립트 첫머리에 프로젝트 트리의 절대경로가 박혀 있다. 개발 환경의
+> 값이므로, 트리를 둔 위치에 맞게 그 `cd` 경로를 고쳐서 쓴다.
+
+fat 빌드에는 **4.2J Developer CD의 멀티플랫폼 라이브러리**가 설치되어
+있어야 한다. 설치된 AppKit/Foundation이 i386 전용이면 m68k/sparc 링크가
+`objc_msgSend` 미해결로 실패한다 —
+[`doc/INSTALL_PLAN.md`](doc/INSTALL_PLAN.md)에 그때의 기록이 있다.
+i386만 필요하면 `tools/build-app.sh` + `tools/build-pkg.sh` 로 충분하다.
+
+**설치** — 산출된 `.pkg` 를 Installer.app 으로 연다. 입력기는 부팅 시
 `SMHangul.rc` 가 기동하므로 **재부팅해야 활성화**된다.
 
 ## 도구
