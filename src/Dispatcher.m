@@ -116,7 +116,8 @@ extern id inputServer;
     /* [ENHANCE] 자판 인지 라우팅: 현재 자판에서 자모인 키만 조합에 넣고, 그 외
      * (숫자·기호·비자모)는 조합 커밋 후 통과. 두벌식에선 isJamoKey 가 A-Za-z 에서만
      * 참이라 기존 `(c-'A')>25 && (c-'a')>25` 게이트와 동일(회귀 없음). 세벌식최종의
-     * 숫자/기호 자모 키를 조합에 태우려면 이 자판 인지 방식이 필수(§10). */
+     * 숫자/기호 자모 키를 조합에 태우려면 이 자판 인지 방식이 필수
+     * (doc/KEYBOARD_LAYOUT_PLAN.md §10). */
     if (![fep isJamoKey:c]) {
         [self makeCompleteChar:sender];
         [sender insertText:inString];

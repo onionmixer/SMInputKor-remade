@@ -124,7 +124,7 @@ NSObject. 아웃렛 cvtField/cvtWin(조합중 표시). 조합 파이프라인 �
   (gdb-multiarch), 동작 대조, 입출력 관찰이 가능.
 - **API 정본 보유.** SDK 예제 소스로 프레임워크 호출 관례가 확정적.
 
-### 3.2 도구
+### 3.2 도구와 절차
 - **정적**: Ghidra(MCP), IDA Pro(MCP) — i386 Mach-O 디컴파일. ObjC 셀렉터/
   send 흐름을 함수에 주석. 두 도구 교차(한쪽이 놓친 것 상호보완).
 - **동적**: `gdb-multiarch`(i386). 라이브 디버깅 가능성은 §3.4 타당성 테스트로

@@ -16,7 +16,8 @@
  *
  * ※ 자판사전(SMHangul.dict)은 정본이 **keystroke→action** 방향이다(원본 13항목).
  *   재구성 초기엔 로드가 2항목만 담고 저장이 action→keystroke 로 뒤집어 3개만 써서,
- *   Set 저장 즉시 한/영 전환·공백·백스페이스 바인딩이 파괴됐다(§19). 지금은 dict
+ *   Set 저장 즉시 한/영 전환·공백·백스페이스 바인딩이 파괴됐다
+ *   (doc/KEYBOARD_LAYOUT_PLAN.md §19). 지금은 dict
  *   전체를 보존하고 편집 대상 3종만 keystroke 키로 갱신하며, 손상된 dict 는
  *   repairKeyBindings 가 로드 시 자동 교정한다(멱등).
  */

@@ -158,7 +158,7 @@ indexWithKey:, changeAttributeType:.
 (survey root 목록에서 잘림 — Phase 후속에서 method_imp 재확인.
 Hanja.nib에 outlet/action changeHangul:/changeHanja:/hanjapanel: 존재.)
 
-## 2b. FrontEnd 조합 파이프라인 (실측 — src/FrontEnd.m 착수)
+## 2b. FrontEnd 조합 파이프라인 (실측 — src/FrontEnd.m 복원 완료)
 - `imProcessEvent:code`: save_unfn=[myAutomata unfn_code] 백업 → `[myAutomata
   korean:code]` → 성공 시 `makeReplaceString:[returnFlag]`(현재) + `makeReplaceString:
   [restFlag]`(직전 잔여) → working=1, 비인라인이면 displayFEP.
@@ -203,7 +203,7 @@ Hanja.nib에 outlet/action changeHangul:/changeHanja:/hanjapanel: 존재.)
   acceptsFirstResponder 모두 NO(클라이언트 포커스 유지), makeKeyWindow 무력화(추정),
   sendEvent:([super]+[NSApp ...] 포커스 콜백; NSApp 셀렉터 확인 필요).
 
-## 2d. Dispatcher — IM 프로토콜 핵심 (실측 — src/Dispatcher.m 착수)
+## 2d. Dispatcher — IM 프로토콜 핵심 (실측 — src/Dispatcher.m 복원 완료)
 전역 `fep`(=FrontEnd, _fep@0x42348)를 구동. 조합 사이클:
 - `insertText:sender:conversation:`: 꺼짐→통과; 영문자(A-Z/a-z)만 `[fep
   imProcessEvent:c]`+`displayString:`; 비문자→`makeCompleteChar:`(커밋) 후 통과;
@@ -262,7 +262,7 @@ Hanja.nib에 outlet/action changeHangul:/changeHanja:/hanjapanel: 존재.)
 - NOTE: makeCompleteChar:의 57EAE(sender 무인자)·57EB2(sender bool)·57EB6
   (hanjaConverter setter) 셀렉터 확인 필요.
 
-## 2e. HanjaConverter — 한자 변환 (실측 — src/HanjaConverter.m 착수)
+## 2e. HanjaConverter — 한자 변환 (실측 — src/HanjaConverter.m 복원 완료)
 메서드(14): init, setDispatcher:, setResp:, _initMatrixWithFont:, frontHanja:,
 orderOutPanel:, hanjapanel:index:, hanjaWithString:index:, hanjaWithStrings:index:,
 findWord:index:, clearWordArray, changeHangul:, changeHanja:,
@@ -293,7 +293,7 @@ browser:createRowsForColumn:inMatrix:.
 - ※ Dispatcher hanjaConvert: 셀렉터 정정 완료(setResp:/hanjaWithString:index:/
   hanjaWithStrings:index:).
 
-## 2f. Preference — 환경설정 (실측 — src/Preference.m 착수)
+## 2f. Preference — 환경설정 (실측 — src/Preference.m 복원 완료)
 메서드(6): init, showUI, loadInputManagerInfo, setPopUpWithKeyBindingDictionaray:andKey:
 (원본 오타), indexWithKey:, changeAttributeType:.
 - `showUI`(UI 갱신+[panel orderFront:]), `indexWithKey:`(자판 액션키→인덱스 0~3,
@@ -434,7 +434,7 @@ NSInputServer 경로부터 실증.
   (insertNewline: 등 표준 셀렉터는 forward로 정상 — 특수처리는 enteredSpace: 만.)
 - 재빌드(402888B)·교체·구 서버 kill 완료.
 
-## 8. Preference OK 미닫힘 — 분석 및 복원 착수 (2026-08-10)
+## 8. Preference OK 미닫힘 — 분석 및 복원 (2026-08-10, §9에서 완료)
 - **증상:** Preference 창에서 OK 클릭해도 안 닫힘.
 - **원본 분석(IDA):**
   - nib(data.classes) Preference ACTIONS = changeAttributeType:/revertDefaults:/
@@ -471,6 +471,9 @@ NSInputServer 경로부터 실증.
   [panel orderOut:] 로 패널 닫음. (원본은 적용 버튼이 저장만·닫기는 타이틀바 닫기상자.)
   문구는 실기 렌더 안전 위해 영문(소스 한글=UTF-8→EUC-KR 환경서 깨짐 우려).
 - 빌드 412440B, SMHangul.real 교체.
+
+> 절 10·11은 없다. 작성 중 번호가 건너뛰었고, 다시 매기면 이 문서를
+> 가리키는 다른 곳(`HANDOFF.md` 의 §2g·§2h 등)이 깨지므로 그대로 둔다.
 
 ## 12. 연속 자음("ㅋㅋㅋ") 멈춤 — 원본 버그 수정 (2026-08-10)
 - **증상:** "ㅋㅋㅋㅋ" 입력 시 첫 ㅋ 후 편집기 입력 멈춤. "ㅋ ㅋ ㅋ"(공백)은 정상.

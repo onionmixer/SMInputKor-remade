@@ -74,12 +74,12 @@
   (Dispatcher doCommandBySelector: moveUp/Down). 0/미설정 시 기본 10 유지.
 - 검증: RepeatCount=5 저장 후 한자 패널에서 moveDown 이 5칸 이동.
 
-### 2.4 Hanja Area (None/Mark) — [INFER] 의미 미확정
+### 2.4 Hanja Area (None/Mark) — [INFER] 의미 미확정 → **§10에서 구현**
 - 후보 의미: 한자 변환 후보 표시를 marked(밑줄/영역표시) vs 패널. 실측 근거 부족.
 - 계획: 원본에서 hanjaArea ivar 사용처 재확인(현재 없음). 의미 확정 전엔 보류하고
   사용자에 의미 질의 또는 최소구현(설정만 유지). **구현 착수 전 확인 필요.**
 
-### 2.5 Hanja Conversion — [INFER] 의미 미확정
+### 2.5 Hanja Conversion — [INFER] 의미 미확정 → **§10에서 구현**
 - 저장 셀렉터 0x56852 미확정. hanjaConversion ivar 사용처 없음. 2.4 와 동일 — 보류/질의.
 
 ### 2.6 Marked Text Attribute/Color — AppKit 처리
@@ -95,7 +95,7 @@
 - 원본 버그 교정은 [ENHANCE]/[FIX] 태그로 명시, 충실복원 부분과 구분.
 - 의미 불명(2.4/2.5)은 추측 구현 금지 — 확인 후 진행.
 
-## 5. codex 교차검토 (예정)
+## 5. codex 교차검토 (완료 — 결과는 §6)
 - 계획의 타당성·누락·리스크 검토. **codex 결론은 불신하고 정본(IDA)·실측으로 재검증.**
 
 ## 6. codex 교차검토 결과 (정본으로 재검증 — codex 불신)
@@ -132,7 +132,8 @@
   → 기존 옵션(초기 한/영, marked text 속성/색)이 **실제로 올바르게** 동작.
 - **Phase 2**: Input Unit(Character/Word) — Dispatcher 에서 확정분 drain 방식, 트레이스
   테스트로 의미 특성화 후 최소·격리 구현. 회귀 방지 최우선.
-- **Phase 3(보류)**: Hanja Area/Conversion/RepeatCount — 근거·의미 확보 전 미구현.
+- ~~**Phase 3(보류)**: Hanja Area/Conversion/RepeatCount — 근거·의미 확보 전 미구현.~~
+  → 방침 변경 후 **§10에서 구현 완료**(원본 미구현 → 의도 매칭, 기본값은 현행 보존).
 
 ## 8. Phase 1 실행 기록 (2026-08-10)
 - **[FIX] 라디오 매트릭스 저장/로드**: writeToUserDefaults 는 `[[m selectedCell] title]`
