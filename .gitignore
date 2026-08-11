@@ -14,6 +14,10 @@ data/
 backup/
 pkg/
 
+# 릴리즈용으로 묶은 산출물. GitHub 릴리즈 자산으로 올릴 것이지
+# 저장소에 넣을 것이 아니다 (수백 KB 바이너리 + 정본 리소스 포함).
+release/
+
 # HANDOFF은 내부 문서
 HANDOFF.md
 

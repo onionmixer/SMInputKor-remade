@@ -55,6 +55,27 @@ Softmagic 한글 입력기는 OPENSTEP의 Input Manager(입력서버) 구조로 
 > `python3 tools/extract_tables.py` (정본 바이너리에서 조합표 추출),
 > `python3 tools/gen_layouts.py` (세벌식 자판표 생성).
 
+## 빌드·설치
+
+빌드는 **실기 OPENSTEP에서** 한다. 이 트리를 실기에 NFS로 마운트해 두고
+(`tools/*.sh` 는 마운트 지점을 `/ndrv` 로 가정한다 — 다른 곳에 붙였다면
+스크립트의 그 경로를 고쳐야 한다), 실기에서 다음 순서로 돈다.
+
+```sh
+python3 tools/extract_tables.py     # 정본 바이너리에서 조합표 추출 (리눅스에서)
+python3 tools/gen_layouts.py        # 세벌식 자판표 생성        (리눅스에서)
+sh tools/build-fat.sh               # fat(i386/m68k/sparc) 빌드  (실기에서)
+sh tools/build-fatpkg.sh            # .pkg 패키징               (실기에서)
+```
+
+`data/` 는 커밋하지 않으므로 앞의 두 단계가 선행되어야 한다. fat 빌드에는
+4.2J Developer CD의 멀티플랫폼 라이브러리가 설치되어 있어야 한다
+(설치 프레임워크가 i386 전용이면 m68k/sparc 링크가 실패한다 —
+[`doc/INSTALL_PLAN.md`](doc/INSTALL_PLAN.md)).
+
+설치는 산출된 `.pkg` 를 Installer.app 으로 연다. 입력기는 부팅 시
+`SMHangul.rc` 가 기동하므로 **재부팅해야 활성화**된다.
+
 ## 도구
 Ghidra(MCP), IDA Pro(MCP), gdb-multiarch, 실기 OPENSTEP(정본 실행 환경).
 
