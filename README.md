@@ -12,6 +12,19 @@ i386 Mach-O 바이너리에서 **소스 레벨로 복원**하고(remade), 원본
 - 자판 확장 계획·실행 기록: [`doc/KEYBOARD_LAYOUT_PLAN.md`](doc/KEYBOARD_LAYOUT_PLAN.md)
 - 재개 노트(내부): `HANDOFF.md` (gitignore)
 
+## 요구 환경
+
+**OPENSTEP 4.2J (일본어판)** 이 필요하다. 입력기(Input Manager) 기반이
+그쪽에 들어 있고, fat 빌드에 쓰이는 멀티플랫폼 라이브러리도 4.2J
+Developer CD에서 온다. 영문판만으로는 빌드도 동작도 보장하지 않는다.
+
+배포 패키지는 **fat 3아키텍처 — i386 / m68k / sparc** 로 만든다. 즉
+Intel·Motorola·SPARC 어느 OPENSTEP에서도 같은 `.pkg` 하나로 설치된다.
+(hppa는 이 기계에 `cc1obj` 백엔드가 없어 제외했다.)
+
+동작 확인은 **i386 실기**에서 했다. m68k/sparc는 빌드·패키징까지이며
+실기 검증은 하지 않았다.
+
 ## 지금 상태
 
 실기 OPENSTEP(Intel)에서 **한글 입력 동작**. fat(i386/m68k/sparc) 빌드·설치 패키지까지.
@@ -121,8 +134,8 @@ sh tools/build-fatpkg.sh    # Installer.app 용 .pkg 패키징
 > 값이므로, 트리를 둔 위치에 맞게 그 `cd` 경로를 고쳐서 쓴다.
 
 fat 빌드에는 **4.2J Developer CD의 멀티플랫폼 라이브러리**가 설치되어
-있어야 한다. 설치된 AppKit/Foundation이 i386 전용이면 m68k/sparc 링크가
-`objc_msgSend` 미해결로 실패한다 —
+있어야 한다(위 요구 환경 참조). 설치된 AppKit/Foundation이 i386 전용이면
+m68k/sparc 링크가 `objc_msgSend` 미해결로 실패한다 —
 [`doc/INSTALL_PLAN.md`](doc/INSTALL_PLAN.md)에 그때의 기록이 있다.
 i386만 필요하면 `tools/build-app.sh` + `tools/build-pkg.sh` 로 충분하다.
 
