@@ -237,8 +237,8 @@ smpid=$!
 ## 9. 설치 기록 (2026-09-04)
 
 ```
-백업 : /NextLibrary/InputManagers/SMHangul/SMHangul.rc.orig-20260904  (234 B, cp -p)
-설치 : /NextLibrary/InputManagers/SMHangul/SMHangul.rc                (1770 B, 644 root)
+백업 : /me/sminputkor/SMHangul.rc.orig-20260904          (234 B)
+설치 : /NextLibrary/InputManagers/SMHangul/SMHangul.rc   (1770 B, 644 root)
 검사 : sh -n  통과
        BSD sum 06708/2 — 저장소 원본을 python 으로 재계산한 값과 일치
 ```
@@ -246,9 +246,14 @@ smpid=$!
 되돌리기:
 
 ```sh
-cp /NextLibrary/InputManagers/SMHangul/SMHangul.rc.orig-20260904 \
+cp /me/sminputkor/SMHangul.rc.orig-20260904 \
    /NextLibrary/InputManagers/SMHangul/SMHangul.rc
 ```
+
+> 백업을 **입력기 디렉터리 밖**에 둔다.  처음에 `SMHangul.rc.orig-20260904`
+> 를 그 디렉터리 안에 두었더니 `build-fatpkg.sh` 의 `cp -R` 이 그것까지 집어
+> 페이로드가 22 → **23 파일**이 됐다.  패키지 검사가 파일 수를 세고 있어서
+> 잡혔다 — 세지 않았으면 남의 기계에 내 백업 파일을 설치할 뻔했다.
 
 ## 10. 남은 것 — 재부팅 판정
 
@@ -261,3 +266,20 @@ grep SMHangul /usr/adm/messages # DPS 에러 / 재시도 로그
 
 가장 강한 증거는 **`DPS Error` 가 있는데 프로세스는 살아 있는 부팅**이다 —
 그것이 재시도가 실제로 구해 낸 장면이다.
+
+## 11. 릴리즈 (2026-09-04)
+
+`v0.2` — https://github.com/onionmixer/SMInputKor-remade/releases/tag/v0.2
+
+- 자산 `SMInputKor-remade-0.2.pkg.tar` (696,320 B) + `SHA256SUMS`
+- 패키지 `.info` Version 0.1 → **0.2**, 페이로드 22 파일(23 이 아님을 확인)
+- 패키지 안의 `SMHangul.rc` 를 꺼내 **저장소 원본과 바이트 대조**했다
+  (BSD sum 06708/2, 1770 B).  산출물끼리 비교하지 않았다.
+- 옛 rc 문구가 페이로드에 남아 있지 않고 백업 파일도 섞이지 않은 것을
+  호스트에서 페이로드를 풀어 확인했다.
+- 실기 `/me/packages/SMInputKor-remade/Softmagic_Hangul.pkg` 도 새 것으로
+  교체(체크섬 대조 완료).
+
+**빌드가 실행 중인 입력서버를 죽인다**(`build-fatpkg.sh` 가 실행 파일을 바꾸기
+위해 `kill -9`).  그래서 빌드 직후에는 한글 입력이 없고, **재부팅해야
+돌아온다** — 그 재부팅이 §10 판정의 1회차가 된다.
