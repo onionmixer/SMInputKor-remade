@@ -1,0 +1,52 @@
+#
+# SMHangul startup script, run at boot time.
+#
+# The input server is an NSApplication, so it must reach the window
+# server when it starts or it exits.  This script runs from /etc/rc
+# line 524, but init does not start the window server until it reaches
+# /etc/ttys line 22 -- which is after rc.  The connection is therefore
+# a race, and this machine loses it on about one boot in four, leaving
+# no Korean input server at all.
+#
+# So: start it exactly the way this script always did, then watch from
+# the background.  If it is gone SETTLE seconds later, start it again,
+# up to TRIES times.  The watcher never delays the boot, and on a boot
+# that works it costs one sleeping shell for ten seconds and says
+# nothing at all.
+#
+# Only user.err reaches /usr/adm/messages on this machine; daemon.notice
+# reaches neither that nor the console.  So the retry log is err level
+# even when it is reporting a recovery.
+#
+SMHANGUL=/NextLibrary/InputManagers/SMHangul/SMHangul.app/SMHangul
+SETTLE=10
+GAP=4
+TRIES=12
+LOG="/usr/ucb/logger -p user.err -t SMHangul.rc"
+
+echo -n " (SoftMagic Korean Input)" >/dev/console
+
+$SMHANGUL &
+smpid=$!
+
+(
+    n=1
+    while [ $n -le $TRIES ]
+    do
+        /usr/bin/sleep $SETTLE
+        if /bin/kill -0 $smpid 2>/dev/null; then
+            if [ $n -gt 1 ]; then
+                $LOG "input server still running ${SETTLE}s after attempt $n"
+            fi
+            exit 0
+        fi
+        $LOG "input server was gone ${SETTLE}s after attempt $n of $TRIES"
+        n=`/bin/expr $n + 1`
+        if [ $n -le $TRIES ]; then
+            /usr/bin/sleep $GAP
+            $SMHANGUL >/dev/console 2>&1 &
+            smpid=$!
+        fi
+    done
+    $LOG "no Korean input server on this boot after $TRIES attempts"
+) </dev/null >/dev/null 2>&1 &
